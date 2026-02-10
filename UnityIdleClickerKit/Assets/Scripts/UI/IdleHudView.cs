@@ -14,9 +14,6 @@ namespace IdleClickerKit.UI
         private TMP_Text coinsText;
 
         [SerializeField]
-        private TMP_Text beadsText;
-
-        [SerializeField]
         private TMP_Text lifetimeText;
 
         [SerializeField]
@@ -64,11 +61,6 @@ namespace IdleClickerKit.UI
             if (coinsText != null)
             {
                 coinsText.text = $"BioGel: {NumberFormatter.Compact(manager.Coins)}";
-            }
-
-            if (beadsText != null)
-            {
-                beadsText.text = $"Beads: {NumberFormatter.Compact(manager.Beads)}";
             }
 
             if (lifetimeText != null)

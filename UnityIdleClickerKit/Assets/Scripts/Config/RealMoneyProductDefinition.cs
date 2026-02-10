@@ -19,12 +19,9 @@ namespace IdleClickerKit.Config
         public float bioGelReward = 0f;
 
         [Min(0f)]
-        public float beadsReward = 0f;
-
-        [Min(1f)]
-        public float rewardBoostMultiplier = 1f;
+        public float progressBoostMultiplier = 1f;
 
         [Min(0f)]
-        public float rewardBoostDurationSeconds = 0f;
+        public float progressBoostDurationSeconds = 0f;
     }
 }

@@ -4,13 +4,13 @@ using UnityEngine;
 
 namespace IdleClickerKit.UI
 {
-    public sealed class BeadOfferListView : MonoBehaviour
+    public sealed class ProgressBoostOfferListView : MonoBehaviour
     {
         [SerializeField]
         private IdleClickerManager manager;
 
         [SerializeField]
-        private BeadOfferButtonView offerButtonPrefab;
+        private ProgressBoostOfferButtonView offerButtonPrefab;
 
         [SerializeField]
         private Transform contentRoot;
@@ -18,7 +18,7 @@ namespace IdleClickerKit.UI
         [SerializeField]
         private bool rebuildOnStart = true;
 
-        private readonly List<BeadOfferButtonView> spawnedButtons = new List<BeadOfferButtonView>();
+        private readonly List<ProgressBoostOfferButtonView> spawnedButtons = new List<ProgressBoostOfferButtonView>();
 
         private void Start()
         {
@@ -28,12 +28,12 @@ namespace IdleClickerKit.UI
             }
         }
 
-        [ContextMenu("Build Bead Offer Buttons")]
+        [ContextMenu("Build Progress Boost Buttons")]
         public void Build()
         {
             if (manager == null || offerButtonPrefab == null || contentRoot == null)
             {
-                Debug.LogWarning("[IdleClicker] BeadOfferListView is not configured.");
+                Debug.LogWarning("[IdleClicker] ProgressBoostOfferListView is not configured.");
                 return;
             }
 
@@ -43,7 +43,7 @@ namespace IdleClickerKit.UI
             }
 
             ClearSpawnedButtons();
-            var definitions = manager.GetBeadExchangeOfferDefinitions();
+            var definitions = manager.GetProgressBoostOfferDefinitions();
             for (var i = 0; i < definitions.Count; i++)
             {
                 var definition = definitions[i];

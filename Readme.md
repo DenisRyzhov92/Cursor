@@ -7,20 +7,20 @@
 Папка: `UnityIdleClickerKit/Assets/Scripts`
 
 - **Core**
-  - `IdleClickerEngine` — экономика игры (клик, пассивный доход, апгрейды, BioGel/Beads, магазин)
+  - `IdleClickerEngine` — экономика игры (клик, пассивный доход, апгрейды, магазин бустов)
   - `IdleClickerManager` — MonoBehaviour-обертка для сцены, автосейв, оффлайн-доход, API для UI
   - `IdleSaveStorage` — сохранение/загрузка JSON в `Application.persistentDataPath`
   - `NumberFormatter` — компактный формат чисел (`12.5K`, `3.1M`)
 - **Config**
   - `IdleClickerConfig` (ScriptableObject) — все стартовые параметры экономики
   - `UpgradeDefinition` — описание апгрейда (стоимость, бонусы, unlock-условие)
-  - `BeadExchangeOfferDefinition` — офферы обмена BioGel -> Beads
+  - `ProgressBoostOfferDefinition` — офферы ускорителей прогресса за BioGel
   - `RealMoneyProductDefinition` — полезные real-money продукты
 - **UI**
-  - `IdleHudView` — обновляет HUD (BioGel, Beads, tap, BioGel/s, multiplier, offline reward)
+  - `IdleHudView` — обновляет HUD (BioGel, tap, BioGel/s, multiplier, offline reward)
   - `UpgradeButtonView` — логика кнопки апгрейда
   - `UpgradeListView` — автогенерация списка апгрейдов из конфига
-  - `BeadOfferButtonView` / `BeadOfferListView` — магазин бусин за BioGel
+  - `ProgressBoostOfferButtonView` / `ProgressBoostOfferListView` — магазин ускорителей за BioGel
   - `RealMoneyProductButtonView` / `RealMoneyProductListView` — витрина полезных IAP
   - `RewardedAdButtonView` — UI-кнопка для rewarded рекламы
   - `TapAreaView` — зона тапа, поддержка удержания
@@ -56,9 +56,9 @@
    - повесь `MockRewardedAdsProvider` (для локального теста),
    - повесь `RewardedOnlyMonetizationController`,
    - привяжи `IdleClickerManager` и `RewardedAdsProvider`.
-11. Для магазина бусин за BioGel:
-   - создай prefab с `BeadOfferButtonView`,
-   - добавь `BeadOfferListView` на контент списка,
+11. Для магазина ускорителей за BioGel:
+   - создай prefab с `ProgressBoostOfferButtonView`,
+   - добавь `ProgressBoostOfferListView` на контент списка,
    - укажи `Manager`, `Offer Button Prefab`, `Content Root`.
 12. Для полезных покупок за реальные деньги:
    - добавь объект `IAP`,
@@ -72,14 +72,13 @@
 ## Концепция Space Farm
 
 - Основной ресурс: **BioGel**.
-- Вторичный ресурс магазина: **Beads**.
 - Тап = ручной сбор в куполе.
 - Idle = автоматическая добыча дронами.
 - Цель: пройти путь от мини-теплицы до терраформинга.
 
 Магазин:
-- **BioGel -> Beads**: офферы обмена внутриигровой валюты на бусины.
-- **Real money utility packs**: полезные наборы (BioGel + Beads + временный буст).
+- **Progress Boost Shop**: временные ускорители за BioGel.
+- **Real money utility packs**: полезные наборы (BioGel + временный буст).
 
 Дефолтная цепочка апгрейдов:
 1. Manual Harvest Protocol
@@ -95,7 +94,6 @@
 - Путь: `Application.persistentDataPath`
 - Сохраняется:
   - BioGel (внутреннее поле `coins`),
-  - Beads (внутреннее поле `beads`),
   - lifetime BioGel,
   - уровни апгрейдов,
   - время последнего сейва (для оффлайн-начисления).
@@ -103,8 +101,8 @@
 ## Что быстро добавить перед релизом
 
 1. **Rewarded ad only**: `x2 добыча на 30 минут` + мгновенная награда BioGel.
-2. **Магазин Beads**:
-   - обменные офферы с разной эффективностью,
+2. **Магазин бустов за BioGel**:
+   - офферы ускорения с разной силой/длительностью,
    - unlock по lifetime BioGel.
 3. **IAP**:
    - Starter Supply Drop,

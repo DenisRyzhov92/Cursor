@@ -13,9 +13,9 @@ namespace IdleClickerKit.Core
             new Dictionary<string, UpgradeDefinition>(StringComparer.Ordinal);
         private readonly Dictionary<string, int> levelsById =
             new Dictionary<string, int>(StringComparer.Ordinal);
-        private readonly List<BeadExchangeOfferDefinition> beadOffers = new List<BeadExchangeOfferDefinition>();
-        private readonly Dictionary<string, BeadExchangeOfferDefinition> beadOffersById =
-            new Dictionary<string, BeadExchangeOfferDefinition>(StringComparer.Ordinal);
+        private readonly List<ProgressBoostOfferDefinition> progressBoostOffers = new List<ProgressBoostOfferDefinition>();
+        private readonly Dictionary<string, ProgressBoostOfferDefinition> progressBoostOffersById =
+            new Dictionary<string, ProgressBoostOfferDefinition>(StringComparer.Ordinal);
 
         private double clickBonusSum = 0d;
         private double passiveBonusSum = 0d;
@@ -26,13 +26,12 @@ namespace IdleClickerKit.Core
         {
             this.config = config ?? throw new ArgumentNullException(nameof(config));
             BuildDefinitionCache(config.upgrades);
-            BuildBeadOfferCache(config.beadExchangeOffers);
+            BuildProgressBoostOfferCache(config.progressBoostOffers);
             LoadProgress(saveData);
             RecalculateBonuses();
         }
 
         public double Coins { get; private set; }
-        public double Beads { get; private set; }
         public double LifetimeCoins { get; private set; }
 
         public double ClickPower
@@ -55,9 +54,9 @@ namespace IdleClickerKit.Core
             get { return definitions; }
         }
 
-        public IReadOnlyList<BeadExchangeOfferDefinition> BeadExchangeOffers
+        public IReadOnlyList<ProgressBoostOfferDefinition> ProgressBoostOffers
         {
-            get { return beadOffers; }
+            get { return progressBoostOffers; }
         }
 
         public IReadOnlyList<UpgradeSnapshot> GetUpgradeSnapshots()
@@ -82,26 +81,26 @@ namespace IdleClickerKit.Core
             return BuildSnapshot(definition);
         }
 
-        public IReadOnlyList<BeadExchangeOfferSnapshot> GetBeadExchangeOfferSnapshots()
+        public IReadOnlyList<ProgressBoostOfferSnapshot> GetProgressBoostOfferSnapshots()
         {
-            var snapshots = new List<BeadExchangeOfferSnapshot>(beadOffers.Count);
-            for (var i = 0; i < beadOffers.Count; i++)
+            var snapshots = new List<ProgressBoostOfferSnapshot>(progressBoostOffers.Count);
+            for (var i = 0; i < progressBoostOffers.Count; i++)
             {
-                snapshots.Add(BuildBeadExchangeOfferSnapshot(beadOffers[i]));
+                snapshots.Add(BuildProgressBoostOfferSnapshot(progressBoostOffers[i]));
             }
 
             return snapshots;
         }
 
-        public BeadExchangeOfferSnapshot GetBeadExchangeOfferSnapshot(string offerId)
+        public ProgressBoostOfferSnapshot GetProgressBoostOfferSnapshot(string offerId)
         {
-            BeadExchangeOfferDefinition definition;
-            if (string.IsNullOrWhiteSpace(offerId) || !beadOffersById.TryGetValue(offerId, out definition))
+            ProgressBoostOfferDefinition definition;
+            if (string.IsNullOrWhiteSpace(offerId) || !progressBoostOffersById.TryGetValue(offerId, out definition))
             {
                 return null;
             }
 
-            return BuildBeadExchangeOfferSnapshot(definition);
+            return BuildProgressBoostOfferSnapshot(definition);
         }
 
         public void Tap()
@@ -112,11 +111,6 @@ namespace IdleClickerKit.Core
         public void GrantCoins(double amount)
         {
             AddCoins(amount);
-        }
-
-        public void GrantBeads(double amount)
-        {
-            AddBeads(amount);
         }
 
         public void Tick(double deltaTimeSeconds)
@@ -160,27 +154,21 @@ namespace IdleClickerKit.Core
             return true;
         }
 
-        public bool TryBuyBeadExchangeOffer(string offerId)
+        public bool TryBuyProgressBoostOffer(string offerId)
         {
-            BeadExchangeOfferDefinition definition;
-            if (string.IsNullOrWhiteSpace(offerId) || !beadOffersById.TryGetValue(offerId, out definition))
+            ProgressBoostOfferDefinition definition;
+            if (string.IsNullOrWhiteSpace(offerId) || !progressBoostOffersById.TryGetValue(offerId, out definition))
             {
                 return false;
             }
 
-            if (!IsBeadOfferUnlocked(definition))
+            if (!IsProgressBoostOfferUnlocked(definition))
             {
                 return false;
             }
 
             var cost = Math.Max(1d, definition.bioGelCost);
-            if (!TrySpendCoins(cost))
-            {
-                return false;
-            }
-
-            AddBeads(Math.Max(1d, definition.beadsAmount));
-            return true;
+            return TrySpendCoins(cost);
         }
 
         public OfflineProgressResult ApplyOfflineProgress(long nowUnixUtc, float capSeconds, float efficiency)
@@ -217,7 +205,6 @@ namespace IdleClickerKit.Core
         {
             var saveData = new IdleSaveData();
             saveData.coins = Coins;
-            saveData.beads = Beads;
             saveData.lifetimeCoins = LifetimeCoins;
             saveData.lastSaveUnixUtc = GetUnixUtcNow();
             saveData.upgradeLevels = new List<UpgradeLevelData>(definitions.Count);
@@ -239,7 +226,6 @@ namespace IdleClickerKit.Core
         public void ResetProgress()
         {
             Coins = Math.Max(0d, config.startingCoins);
-            Beads = Math.Max(0d, config.startingBeads);
             LifetimeCoins = Coins;
 
             for (var i = 0; i < definitions.Count; i++)
@@ -260,16 +246,6 @@ namespace IdleClickerKit.Core
 
             Coins += amount;
             LifetimeCoins += amount;
-        }
-
-        private void AddBeads(double amount)
-        {
-            if (amount <= 0d || double.IsNaN(amount) || double.IsInfinity(amount))
-            {
-                return;
-            }
-
-            Beads += amount;
         }
 
         private bool TrySpendCoins(double amount)
@@ -311,20 +287,24 @@ namespace IdleClickerKit.Core
             };
         }
 
-        private BeadExchangeOfferSnapshot BuildBeadExchangeOfferSnapshot(BeadExchangeOfferDefinition definition)
+        private ProgressBoostOfferSnapshot BuildProgressBoostOfferSnapshot(ProgressBoostOfferDefinition definition)
         {
             var cost = Math.Max(1d, definition.bioGelCost);
-            var beads = Math.Max(1d, definition.beadsAmount);
-            var unlocked = IsBeadOfferUnlocked(definition);
+            var multiplier = Math.Max(1d, definition.boostMultiplier);
+            var duration = Math.Max(1d, definition.boostDurationSeconds);
+            var instantReward = Math.Max(0d, definition.instantBioGelReward);
+            var unlocked = IsProgressBoostOfferUnlocked(definition);
             var canBuy = unlocked && Coins + 1e-9d >= cost;
 
-            return new BeadExchangeOfferSnapshot
+            return new ProgressBoostOfferSnapshot
             {
                 id = definition.id,
                 title = definition.title,
                 description = definition.description,
                 bioGelCost = cost,
-                beadsAmount = beads,
+                boostMultiplier = multiplier,
+                boostDurationSeconds = duration,
+                instantBioGelReward = instantReward,
                 unlockAtLifetimeCoins = definition.unlockAtLifetimeCoins,
                 isUnlocked = unlocked,
                 canBuy = canBuy,
@@ -343,7 +323,7 @@ namespace IdleClickerKit.Core
             return currentLevel > 0 || LifetimeCoins >= definition.unlockAtLifetimeCoins;
         }
 
-        private bool IsBeadOfferUnlocked(BeadExchangeOfferDefinition definition)
+        private bool IsProgressBoostOfferUnlocked(ProgressBoostOfferDefinition definition)
         {
             return LifetimeCoins >= definition.unlockAtLifetimeCoins;
         }
@@ -396,7 +376,7 @@ namespace IdleClickerKit.Core
             }
         }
 
-        private void BuildBeadOfferCache(List<BeadExchangeOfferDefinition> inputDefinitions)
+        private void BuildProgressBoostOfferCache(List<ProgressBoostOfferDefinition> inputDefinitions)
         {
             if (inputDefinitions == null)
             {
@@ -411,13 +391,13 @@ namespace IdleClickerKit.Core
                     continue;
                 }
 
-                if (string.IsNullOrWhiteSpace(definition.id) || beadOffersById.ContainsKey(definition.id))
+                if (string.IsNullOrWhiteSpace(definition.id) || progressBoostOffersById.ContainsKey(definition.id))
                 {
                     continue;
                 }
 
-                beadOffers.Add(definition);
-                beadOffersById.Add(definition.id, definition);
+                progressBoostOffers.Add(definition);
+                progressBoostOffersById.Add(definition.id, definition);
             }
         }
 
@@ -426,14 +406,12 @@ namespace IdleClickerKit.Core
             if (saveData == null)
             {
                 Coins = Math.Max(0d, config.startingCoins);
-                Beads = Math.Max(0d, config.startingBeads);
                 LifetimeCoins = Coins;
                 lastSaveUnixUtc = GetUnixUtcNow();
                 return;
             }
 
             Coins = Math.Max(0d, saveData.coins);
-            Beads = Math.Max(0d, saveData.beads);
             LifetimeCoins = Math.Max(Coins, saveData.lifetimeCoins);
             lastSaveUnixUtc = saveData.lastSaveUnixUtc > 0L ? saveData.lastSaveUnixUtc : GetUnixUtcNow();
 

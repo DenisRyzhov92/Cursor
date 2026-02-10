@@ -26,14 +26,13 @@ namespace IdleClickerKit.Editor
 
             var config = ScriptableObject.CreateInstance<IdleClickerConfig>();
             config.startingCoins = 0f;
-            config.startingBeads = 0f;
             config.baseClickPower = 1f;
             config.basePassivePerSecond = 0f;
             config.offlineIncomeEfficiency = 0.7f;
             config.offlineIncomeCapSeconds = 8f * 3600f;
             config.autosaveIntervalSeconds = 8f;
             config.upgrades = BuildDefaultUpgrades();
-            config.beadExchangeOffers = BuildDefaultBeadOffers();
+            config.progressBoostOffers = BuildDefaultProgressBoostOffers();
             config.realMoneyProducts = BuildDefaultRealMoneyProducts();
 
             AssetDatabase.CreateAsset(config, ConfigAssetPath);
@@ -119,36 +118,42 @@ namespace IdleClickerKit.Editor
             };
         }
 
-        private static List<BeadExchangeOfferDefinition> BuildDefaultBeadOffers()
+        private static List<ProgressBoostOfferDefinition> BuildDefaultProgressBoostOffers()
         {
-            return new List<BeadExchangeOfferDefinition>
+            return new List<ProgressBoostOfferDefinition>
             {
-                new BeadExchangeOfferDefinition
+                new ProgressBoostOfferDefinition
                 {
-                    id = "bead_micro_cache",
-                    title = "Micro Bead Cache",
-                    description = "Exchange BioGel for a small bundle of Beads.",
+                    id = "boost_ion_pulse",
+                    title = "Ion Pulse Boost",
+                    description = "Temporary x1.5 production speed.",
                     unlockAtLifetimeCoins = 40f,
-                    bioGelCost = 150f,
-                    beadsAmount = 10f,
+                    bioGelCost = 180f,
+                    boostMultiplier = 1.5f,
+                    boostDurationSeconds = 180f,
+                    instantBioGelReward = 0f,
                 },
-                new BeadExchangeOfferDefinition
+                new ProgressBoostOfferDefinition
                 {
-                    id = "bead_drone_crate",
-                    title = "Drone Bead Crate",
-                    description = "Exchange BioGel for a medium Bead crate.",
+                    id = "boost_orbital_sync",
+                    title = "Orbital Sync",
+                    description = "x2 production and a small instant drop.",
                     unlockAtLifetimeCoins = 400f,
-                    bioGelCost = 900f,
-                    beadsAmount = 70f,
+                    bioGelCost = 1200f,
+                    boostMultiplier = 2f,
+                    boostDurationSeconds = 300f,
+                    instantBioGelReward = 400f,
                 },
-                new BeadExchangeOfferDefinition
+                new ProgressBoostOfferDefinition
                 {
-                    id = "bead_orbital_vault",
-                    title = "Orbital Bead Vault",
-                    description = "High-tier exchange with best Bead efficiency.",
+                    id = "boost_terraform_rush",
+                    title = "Terraform Rush",
+                    description = "Strong late-game boost with instant BioGel.",
                     unlockAtLifetimeCoins = 3000f,
-                    bioGelCost = 5000f,
-                    beadsAmount = 450f,
+                    bioGelCost = 7000f,
+                    boostMultiplier = 3f,
+                    boostDurationSeconds = 240f,
+                    instantBioGelReward = 2500f,
                 },
             };
         }
@@ -161,23 +166,21 @@ namespace IdleClickerKit.Editor
                 {
                     productId = "iap_starter_supply",
                     title = "Starter Supply Drop",
-                    description = "Instant BioGel and Beads to speed up early progress.",
+                    description = "Instant BioGel plus temporary speed boost.",
                     fallbackPriceLabel = "$0.99",
                     bioGelReward = 8000f,
-                    beadsReward = 80f,
-                    rewardBoostMultiplier = 1f,
-                    rewardBoostDurationSeconds = 0f,
+                    progressBoostMultiplier = 1.5f,
+                    progressBoostDurationSeconds = 900f,
                 },
                 new RealMoneyProductDefinition
                 {
                     productId = "iap_terraform_booster",
                     title = "Terraform Booster",
-                    description = "Powerful temporary multiplier and bonus resources.",
+                    description = "Powerful temporary multiplier and bonus BioGel.",
                     fallbackPriceLabel = "$2.99",
                     bioGelReward = 20000f,
-                    beadsReward = 150f,
-                    rewardBoostMultiplier = 2f,
-                    rewardBoostDurationSeconds = 3600f,
+                    progressBoostMultiplier = 2f,
+                    progressBoostDurationSeconds = 3600f,
                 },
                 new RealMoneyProductDefinition
                 {
@@ -186,9 +189,8 @@ namespace IdleClickerKit.Editor
                     description = "Big utility pack for mid-game acceleration.",
                     fallbackPriceLabel = "$4.99",
                     bioGelReward = 70000f,
-                    beadsReward = 600f,
-                    rewardBoostMultiplier = 2f,
-                    rewardBoostDurationSeconds = 7200f,
+                    progressBoostMultiplier = 3f,
+                    progressBoostDurationSeconds = 7200f,
                 },
             };
         }

@@ -1,15 +1,15 @@
-# Shop Setup (Beads + Real Money)
+# Shop Setup (Progress Boosts + Real Money)
 
 Этот файл описывает подключение двух магазинов:
 
-1. **Beads Shop** — обмен BioGel на бусины.
+1. **Progress Boost Shop** — ускорители прогресса за BioGel.
 2. **Real Money Shop** — полезные наборы за реальные деньги.
 
-## 1) Beads Shop (BioGel -> Beads)
+## 1) Progress Boost Shop (BioGel -> temporary boosts)
 
 Скрипты:
-- `BeadOfferButtonView`
-- `BeadOfferListView`
+- `ProgressBoostOfferButtonView`
+- `ProgressBoostOfferListView`
 
 Шаги:
 1. Создай `ScrollView` с `Content`.
@@ -20,8 +20,8 @@
    - cost (TMP),
    - state (TMP),
    - button.
-3. Добавь на prefab `BeadOfferButtonView` и привяжи ссылки.
-4. На `Content` добавь `BeadOfferListView`:
+3. Добавь на prefab `ProgressBoostOfferButtonView` и привяжи ссылки.
+4. На `Content` добавь `ProgressBoostOfferListView`:
    - `Manager` = `IdleClickerManager`,
    - `Offer Button Prefab` = созданный prefab,
    - `Content Root` = Transform content.
@@ -58,6 +58,9 @@
 
 ## Дефолтные продукты из конфига
 
+- `boost_ion_pulse` — ранний x1.5 буст.
+- `boost_orbital_sync` — x2 буст + мгновенный BioGel.
+- `boost_terraform_rush` — сильный буст late-game.
 - `iap_starter_supply` — быстрый стартовый набор.
 - `iap_terraform_booster` — бустер с временным множителем.
 - `iap_colony_bundle` — крупный полезный набор для mid-game.

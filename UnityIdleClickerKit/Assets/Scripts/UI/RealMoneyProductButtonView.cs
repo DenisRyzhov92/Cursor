@@ -163,17 +163,7 @@ namespace IdleClickerKit.UI
                 rewardText += $"+{NumberFormatter.Compact(definition.bioGelReward)} BioGel";
             }
 
-            if (definition.beadsReward > 0f)
-            {
-                if (!string.IsNullOrEmpty(rewardText))
-                {
-                    rewardText += " • ";
-                }
-
-                rewardText += $"+{NumberFormatter.Compact(definition.beadsReward)} Beads";
-            }
-
-            if (definition.rewardBoostMultiplier > 1f && definition.rewardBoostDurationSeconds > 0f)
+            if (definition.progressBoostMultiplier > 1f && definition.progressBoostDurationSeconds > 0f)
             {
                 if (!string.IsNullOrEmpty(rewardText))
                 {
@@ -181,7 +171,7 @@ namespace IdleClickerKit.UI
                 }
 
                 rewardText +=
-                    $"x{definition.rewardBoostMultiplier:0.##} for {definition.rewardBoostDurationSeconds:0}s";
+                    $"x{definition.progressBoostMultiplier:0.##} for {definition.progressBoostDurationSeconds:0}s";
             }
 
             return string.IsNullOrEmpty(rewardText) ? "Utility pack" : rewardText;

@@ -36,10 +36,11 @@ namespace IdleClickerKit.Core
         private bool isInitialized = false;
 
         private static readonly List<UpgradeSnapshot> EmptySnapshots = new List<UpgradeSnapshot>(0);
-        private static readonly List<BeadExchangeOfferSnapshot> EmptyBeadOfferSnapshots =
-            new List<BeadExchangeOfferSnapshot>(0);
-        private static readonly List<BeadExchangeOfferDefinition> EmptyBeadOfferDefinitions =
-            new List<BeadExchangeOfferDefinition>(0);
+        private static readonly List<ProgressBoostOfferSnapshot> EmptyProgressBoostOfferSnapshots =
+            new List<ProgressBoostOfferSnapshot>(0);
+        private static readonly List<UpgradeDefinition> EmptyUpgradeDefinitions = new List<UpgradeDefinition>(0);
+        private static readonly List<ProgressBoostOfferDefinition> EmptyProgressBoostOfferDefinitions =
+            new List<ProgressBoostOfferDefinition>(0);
         private static readonly List<RealMoneyProductDefinition> EmptyRealMoneyDefinitions =
             new List<RealMoneyProductDefinition>(0);
 
@@ -59,11 +60,6 @@ namespace IdleClickerKit.Core
         public double LifetimeCoins
         {
             get { return engine != null ? engine.LifetimeCoins : 0d; }
-        }
-
-        public double Beads
-        {
-            get { return engine != null ? engine.Beads : 0d; }
         }
 
         public double ClickPower
@@ -217,22 +213,6 @@ namespace IdleClickerKit.Core
             StateChanged?.Invoke();
         }
 
-        public void GrantRewardBeads(double amount)
-        {
-            if (!TryEnsureInitialized())
-            {
-                return;
-            }
-
-            if (amount <= 0d)
-            {
-                return;
-            }
-
-            engine.GrantBeads(amount);
-            StateChanged?.Invoke();
-        }
-
         public void ActivateRewardBoost(float durationSeconds, float multiplier)
         {
             if (!TryEnsureInitialized())
@@ -245,8 +225,7 @@ namespace IdleClickerKit.Core
                 return;
             }
 
-            rewardBoostMultiplier = Math.Max(rewardBoostMultiplier, multiplier);
-            rewardBoostSecondsRemaining = Math.Max(rewardBoostSecondsRemaining, durationSeconds);
+            ActivateProgressBoost(multiplier, durationSeconds);
             StateChanged?.Invoke();
         }
 
@@ -266,20 +245,37 @@ namespace IdleClickerKit.Core
             return wasBought;
         }
 
-        public bool TryBuyBeadExchangeOffer(string offerId)
+        public bool TryBuyProgressBoostOffer(string offerId)
         {
             if (!TryEnsureInitialized())
             {
                 return false;
             }
 
-            var bought = engine.TryBuyBeadExchangeOffer(offerId);
-            if (bought)
+            var definition = FindProgressBoostOfferDefinition(offerId);
+            if (definition == null)
             {
-                StateChanged?.Invoke();
+                return false;
             }
 
-            return bought;
+            var bought = engine.TryBuyProgressBoostOffer(offerId);
+            if (!bought)
+            {
+                return false;
+            }
+
+            if (definition.instantBioGelReward > 0f)
+            {
+                engine.GrantCoins(definition.instantBioGelReward);
+            }
+
+            if (definition.boostMultiplier > 1f && definition.boostDurationSeconds > 0f)
+            {
+                ActivateProgressBoost(definition.boostMultiplier, definition.boostDurationSeconds);
+            }
+
+            StateChanged?.Invoke();
+            return true;
         }
 
         public bool TryApplyRealMoneyProduct(string productId)
@@ -294,21 +290,7 @@ namespace IdleClickerKit.Core
                 return false;
             }
 
-            RealMoneyProductDefinition definition = null;
-            for (var i = 0; i < config.realMoneyProducts.Count; i++)
-            {
-                var candidate = config.realMoneyProducts[i];
-                if (candidate == null)
-                {
-                    continue;
-                }
-
-                if (string.Equals(candidate.productId, productId, StringComparison.Ordinal))
-                {
-                    definition = candidate;
-                    break;
-                }
-            }
+            var definition = FindRealMoneyProductDefinition(productId);
 
             if (definition == null)
             {
@@ -323,16 +305,9 @@ namespace IdleClickerKit.Core
                 anyRewardApplied = true;
             }
 
-            if (definition.beadsReward > 0f)
+            if (definition.progressBoostMultiplier > 1f && definition.progressBoostDurationSeconds > 0f)
             {
-                engine.GrantBeads(definition.beadsReward);
-                anyRewardApplied = true;
-            }
-
-            if (definition.rewardBoostMultiplier > 1f && definition.rewardBoostDurationSeconds > 0f)
-            {
-                rewardBoostMultiplier = Math.Max(rewardBoostMultiplier, definition.rewardBoostMultiplier);
-                rewardBoostSecondsRemaining = Math.Max(rewardBoostSecondsRemaining, definition.rewardBoostDurationSeconds);
+                ActivateProgressBoost(definition.progressBoostMultiplier, definition.progressBoostDurationSeconds);
                 anyRewardApplied = true;
             }
 
@@ -364,24 +339,24 @@ namespace IdleClickerKit.Core
             return engine.GetUpgradeSnapshots();
         }
 
-        public BeadExchangeOfferSnapshot GetBeadExchangeOfferSnapshot(string offerId)
+        public ProgressBoostOfferSnapshot GetProgressBoostOfferSnapshot(string offerId)
         {
             if (!TryEnsureInitialized())
             {
                 return null;
             }
 
-            return engine.GetBeadExchangeOfferSnapshot(offerId);
+            return engine.GetProgressBoostOfferSnapshot(offerId);
         }
 
-        public IReadOnlyList<BeadExchangeOfferSnapshot> GetBeadExchangeOfferSnapshots()
+        public IReadOnlyList<ProgressBoostOfferSnapshot> GetProgressBoostOfferSnapshots()
         {
             if (!TryEnsureInitialized())
             {
-                return EmptyBeadOfferSnapshots;
+                return EmptyProgressBoostOfferSnapshots;
             }
 
-            return engine.GetBeadExchangeOfferSnapshots();
+            return engine.GetProgressBoostOfferSnapshots();
         }
 
         public IReadOnlyList<UpgradeDefinition> GetUpgradeDefinitions()
@@ -396,22 +371,22 @@ namespace IdleClickerKit.Core
                 return config.upgrades;
             }
 
-            return new List<UpgradeDefinition>(0);
+            return EmptyUpgradeDefinitions;
         }
 
-        public IReadOnlyList<BeadExchangeOfferDefinition> GetBeadExchangeOfferDefinitions()
+        public IReadOnlyList<ProgressBoostOfferDefinition> GetProgressBoostOfferDefinitions()
         {
             if (engine != null)
             {
-                return engine.BeadExchangeOffers;
+                return engine.ProgressBoostOffers;
             }
 
-            if (config != null && config.beadExchangeOffers != null)
+            if (config != null && config.progressBoostOffers != null)
             {
-                return config.beadExchangeOffers;
+                return config.progressBoostOffers;
             }
 
-            return EmptyBeadOfferDefinitions;
+            return EmptyProgressBoostOfferDefinitions;
         }
 
         public IReadOnlyList<RealMoneyProductDefinition> GetRealMoneyProductDefinitions()
@@ -477,6 +452,60 @@ namespace IdleClickerKit.Core
             {
                 rewardBoostMultiplier = 1d;
             }
+        }
+
+        private void ActivateProgressBoost(float multiplier, float durationSeconds)
+        {
+            rewardBoostMultiplier = Math.Max(rewardBoostMultiplier, multiplier);
+            rewardBoostSecondsRemaining += durationSeconds;
+        }
+
+        private ProgressBoostOfferDefinition FindProgressBoostOfferDefinition(string offerId)
+        {
+            if (string.IsNullOrWhiteSpace(offerId) || config == null || config.progressBoostOffers == null)
+            {
+                return null;
+            }
+
+            for (var i = 0; i < config.progressBoostOffers.Count; i++)
+            {
+                var definition = config.progressBoostOffers[i];
+                if (definition == null)
+                {
+                    continue;
+                }
+
+                if (string.Equals(definition.id, offerId, StringComparison.Ordinal))
+                {
+                    return definition;
+                }
+            }
+
+            return null;
+        }
+
+        private RealMoneyProductDefinition FindRealMoneyProductDefinition(string productId)
+        {
+            if (string.IsNullOrWhiteSpace(productId) || config == null || config.realMoneyProducts == null)
+            {
+                return null;
+            }
+
+            for (var i = 0; i < config.realMoneyProducts.Count; i++)
+            {
+                var candidate = config.realMoneyProducts[i];
+                if (candidate == null)
+                {
+                    continue;
+                }
+
+                if (string.Equals(candidate.productId, productId, StringComparison.Ordinal))
+                {
+                    return candidate;
+                }
+            }
+
+            return null;
         }
     }
 }

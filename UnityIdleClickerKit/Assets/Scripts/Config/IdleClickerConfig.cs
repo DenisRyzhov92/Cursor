@@ -3,15 +3,12 @@ using UnityEngine;
 
 namespace IdleClickerKit.Config
 {
-    [CreateAssetMenu(menuName = "Idle Clicker/Config", fileName = "IdleClickerConfig")]
+    [CreateAssetMenu(menuName = "Space Farm/Config", fileName = "IdleClickerConfig")]
     public class IdleClickerConfig : ScriptableObject
     {
         [Header("Starting Values")]
         [Min(0f)]
         public float startingCoins = 0f;
-
-        [Min(0f)]
-        public float startingBeads = 0f;
 
         [Min(0f)]
         public float baseClickPower = 1f;
@@ -33,8 +30,8 @@ namespace IdleClickerKit.Config
         [Header("Economy")]
         public List<UpgradeDefinition> upgrades = new List<UpgradeDefinition>();
 
-        [Header("Shop: BioGel -> Beads")]
-        public List<BeadExchangeOfferDefinition> beadExchangeOffers = new List<BeadExchangeOfferDefinition>();
+        [Header("Shop: Progress Boosts for BioGel")]
+        public List<ProgressBoostOfferDefinition> progressBoostOffers = new List<ProgressBoostOfferDefinition>();
 
         [Header("Shop: Real Money Products")]
         public List<RealMoneyProductDefinition> realMoneyProducts = new List<RealMoneyProductDefinition>();

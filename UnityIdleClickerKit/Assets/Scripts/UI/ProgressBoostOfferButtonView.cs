@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace IdleClickerKit.UI
 {
-    public sealed class BeadOfferButtonView : MonoBehaviour
+    public sealed class ProgressBoostOfferButtonView : MonoBehaviour
     {
         [SerializeField]
         private IdleClickerManager manager;
@@ -101,7 +101,7 @@ namespace IdleClickerKit.UI
                 return;
             }
 
-            var snapshot = manager.GetBeadExchangeOfferSnapshot(offerId);
+            var snapshot = manager.GetProgressBoostOfferSnapshot(offerId);
             if (snapshot == null)
             {
                 return;
@@ -119,7 +119,13 @@ namespace IdleClickerKit.UI
 
             if (valueText != null)
             {
-                valueText.text = $"+{NumberFormatter.Compact(snapshot.beadsAmount)} Beads";
+                var value = $"x{snapshot.boostMultiplier:0.##} for {snapshot.boostDurationSeconds:0}s";
+                if (snapshot.instantBioGelReward > 0d)
+                {
+                    value += $" + {NumberFormatter.Compact(snapshot.instantBioGelReward)} BioGel";
+                }
+
+                valueText.text = value;
             }
 
             if (costText != null)
@@ -145,7 +151,7 @@ namespace IdleClickerKit.UI
 
             if (stateText != null)
             {
-                stateText.text = snapshot.canBuy ? "Exchange" : "Need more BioGel";
+                stateText.text = snapshot.canBuy ? "Activate boost" : "Need more BioGel";
             }
 
             if (buyButton != null)
@@ -161,7 +167,7 @@ namespace IdleClickerKit.UI
                 return;
             }
 
-            manager.TryBuyBeadExchangeOffer(offerId);
+            manager.TryBuyProgressBoostOffer(offerId);
         }
     }
 }
