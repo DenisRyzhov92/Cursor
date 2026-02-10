@@ -31,17 +31,20 @@
 Скрипты:
 - `IapProviderBase` (абстракция)
 - `MockIapProvider` (локальный тест)
+- `UnityIapProvider` (боевой провайдер с Unity Purchasing)
 - `RealMoneyStoreController`
 - `RealMoneyProductButtonView`
 - `RealMoneyProductListView`
 
 Шаги:
 1. Создай объект `IAP` и добавь:
-   - `MockIapProvider`,
+   - `MockIapProvider` для локального теста
+     **или**
+   - `UnityIapProvider` для реальных платежей,
    - `RealMoneyStoreController`.
 2. В `RealMoneyStoreController` привяжи:
    - `Manager` = `IdleClickerManager`,
-   - `Iap Provider` = `MockIapProvider`.
+   - `Iap Provider` = выбранный провайдер (`MockIapProvider` или `UnityIapProvider`).
 3. Создай prefab карточки IAP-продукта:
    - title (TMP),
    - description (TMP),
@@ -80,3 +83,11 @@ IAP utility packs:
 - Только по пользовательскому действию.
 - Авто-покупок нет.
 - Реальная интеграция должна использовать `IapProviderBase`.
+
+## Переключение на реальные платежи
+
+1. Установи пакет Unity Purchasing в проект.
+2. Замени `MockIapProvider` на `UnityIapProvider`.
+3. Убедись, что `IdleClickerConfig` содержит нужные `productId`.
+4. В магазине (Google Play Console/GetApps pipeline) заведи те же product ids.
+5. Для подробного чеклиста см. `UNITY_IAP_SETUP.md`.

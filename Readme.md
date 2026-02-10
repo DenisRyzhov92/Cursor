@@ -28,7 +28,7 @@
   - `RewardedOnlyMonetizationController` — rewarded-only логика наград (без авто-показа)
   - `RewardedAdsProviderBase` — абстракция провайдера rewarded рекламы
   - `MockRewardedAdsProvider` — тестовый провайдер для локальной проверки
-  - `IapProviderBase` / `MockIapProvider` — слой магазина реальных покупок
+  - `IapProviderBase` / `MockIapProvider` / `UnityIapProvider` — слой магазина реальных покупок
   - `RealMoneyStoreController` — контроллер выдачи IAP-наград (по кнопке)
 - **Editor**
   - `Space Farm/Create Default Config` — меню для автосоздания дефолтного конфига с космофермерскими апгрейдами
@@ -62,7 +62,7 @@
    - укажи `Manager`, `Offer Button Prefab`, `Content Root`.
 12. Для полезных покупок за реальные деньги:
    - добавь объект `IAP`,
-   - повесь `MockIapProvider` (для локального теста),
+   - повесь `MockIapProvider` (локальный тест) или `UnityIapProvider` (боевой),
    - повесь `RealMoneyStoreController`,
    - привяжи `IdleClickerManager` и `IapProvider`.
 13. Создай prefab карточки IAP с `RealMoneyProductButtonView`, затем добавь `RealMoneyProductListView`.
@@ -130,6 +130,7 @@
 Готовый пакет RU+EN лежит здесь:
 - `UnityIdleClickerKit/LOCALIZATION_PACK.md`
 - `UnityIdleClickerKit/SHOP_SETUP.md`
+- `UnityIdleClickerKit/UNITY_IAP_SETUP.md`
 - `UnityIdleClickerKit/StoreListing/GetApps/ru-RU.md`
 - `UnityIdleClickerKit/StoreListing/GetApps/en-US.md`
 - `UnityIdleClickerKit/Localization/in_game_strings.csv`

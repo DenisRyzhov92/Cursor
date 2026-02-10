@@ -21,6 +21,7 @@
 - `StoreListing/GetApps/en-US.md` — готовые EN тексты для публикации.
 - `Localization/in_game_strings.csv` — ключи и строки для UI + апгрейдов.
 - `SHOP_SETUP.md` — подключение магазинов (Progress Boosts + IAP).
+- `UNITY_IAP_SETUP.md` — быстрый переход с mock на реальные платежи.
 
 ## Как использовать быстро
 
