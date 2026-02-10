@@ -17,6 +17,21 @@
 - `IdleIncomePerSec = (basePassivePerSecond + sum(passive bonuses)) * (1 + sum(multiplier bonuses))`
 - `UpgradeCost(level) = baseCost * costGrowth^level`
 
+## Дефолтная кривая boost-офферов (7 штук)
+
+Early:
+1. `boost_ion_pulse` — cost `120`, x`1.35`, `120s`
+2. `boost_solar_focus` — cost `350`, x`1.50`, `180s`, instant `60`
+3. `boost_drone_overclock` — cost `900`, x`1.75`, `210s`, instant `180`
+
+Mid:
+4. `boost_orbital_sync` — cost `2200`, x`2.00`, `240s`, instant `420`
+5. `boost_bioreactor_surge` — cost `5600`, x`2.35`, `300s`, instant `1300`
+
+Late:
+6. `boost_plasma_wave` — cost `14500`, x`2.80`, `360s`, instant `3600`
+7. `boost_terraform_rush` — cost `36000`, x`3.30`, `420s`, instant `9500`
+
 ## Практические значения для soft-launch
 
 - `offlineIncomeEfficiency`: `0.5 - 0.8`

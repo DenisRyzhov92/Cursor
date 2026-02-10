@@ -58,9 +58,19 @@
 
 ## Дефолтные продукты из конфига
 
-- `boost_ion_pulse` — ранний x1.5 буст.
-- `boost_orbital_sync` — x2 буст + мгновенный BioGel.
-- `boost_terraform_rush` — сильный буст late-game.
+Boost-офферы (кривая soft-launch):
+- Early:
+  - `boost_ion_pulse` — x1.35 на 120с.
+  - `boost_solar_focus` — x1.5 на 180с + небольшой instant drop.
+  - `boost_drone_overclock` — x1.75 на 210с.
+- Mid:
+  - `boost_orbital_sync` — x2.0 на 240с.
+  - `boost_bioreactor_surge` — x2.35 на 300с.
+- Late:
+  - `boost_plasma_wave` — x2.8 на 360с.
+  - `boost_terraform_rush` — x3.3 на 420с.
+
+IAP utility packs:
 - `iap_starter_supply` — быстрый стартовый набор.
 - `iap_terraform_booster` — бустер с временным множителем.
 - `iap_colony_bundle` — крупный полезный набор для mid-game.

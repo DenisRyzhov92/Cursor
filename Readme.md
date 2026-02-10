@@ -80,6 +80,11 @@
 - **Progress Boost Shop**: временные ускорители за BioGel.
 - **Real money utility packs**: полезные наборы (BioGel + временный буст).
 
+Дефолтная лестница бустов (soft-launch):
+- Early: Ion Pulse, Solar Focus, Drone Overclock
+- Mid: Orbital Sync, Bioreactor Surge
+- Late: Plasma Wave, Terraform Rush
+
 Дефолтная цепочка апгрейдов:
 1. Manual Harvest Protocol
 2. Micro Drone Swarm
