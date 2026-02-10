@@ -7,23 +7,29 @@
 Папка: `UnityIdleClickerKit/Assets/Scripts`
 
 - **Core**
-  - `IdleClickerEngine` — экономика игры (клик, пассивный доход, апгрейды, цены, рост стоимости)
+  - `IdleClickerEngine` — экономика игры (клик, пассивный доход, апгрейды, BioGel/Beads, магазин)
   - `IdleClickerManager` — MonoBehaviour-обертка для сцены, автосейв, оффлайн-доход, API для UI
   - `IdleSaveStorage` — сохранение/загрузка JSON в `Application.persistentDataPath`
   - `NumberFormatter` — компактный формат чисел (`12.5K`, `3.1M`)
 - **Config**
   - `IdleClickerConfig` (ScriptableObject) — все стартовые параметры экономики
   - `UpgradeDefinition` — описание апгрейда (стоимость, бонусы, unlock-условие)
+  - `BeadExchangeOfferDefinition` — офферы обмена BioGel -> Beads
+  - `RealMoneyProductDefinition` — полезные real-money продукты
 - **UI**
-  - `IdleHudView` — обновляет HUD (BioGel, tap, BioGel/s, multiplier, offline reward)
+  - `IdleHudView` — обновляет HUD (BioGel, Beads, tap, BioGel/s, multiplier, offline reward)
   - `UpgradeButtonView` — логика кнопки апгрейда
   - `UpgradeListView` — автогенерация списка апгрейдов из конфига
+  - `BeadOfferButtonView` / `BeadOfferListView` — магазин бусин за BioGel
+  - `RealMoneyProductButtonView` / `RealMoneyProductListView` — витрина полезных IAP
   - `RewardedAdButtonView` — UI-кнопка для rewarded рекламы
   - `TapAreaView` — зона тапа, поддержка удержания
 - **Monetization**
   - `RewardedOnlyMonetizationController` — rewarded-only логика наград (без авто-показа)
   - `RewardedAdsProviderBase` — абстракция провайдера rewarded рекламы
   - `MockRewardedAdsProvider` — тестовый провайдер для локальной проверки
+  - `IapProviderBase` / `MockIapProvider` — слой магазина реальных покупок
+  - `RealMoneyStoreController` — контроллер выдачи IAP-наград (по кнопке)
 - **Editor**
   - `Space Farm/Create Default Config` — меню для автосоздания дефолтного конфига с космофермерскими апгрейдами
 
@@ -50,15 +56,30 @@
    - повесь `MockRewardedAdsProvider` (для локального теста),
    - повесь `RewardedOnlyMonetizationController`,
    - привяжи `IdleClickerManager` и `RewardedAdsProvider`.
-11. Создай кнопку "Watch ad", добавь `RewardedAdButtonView` и укажи контроллер монетизации.
-12. Запусти сцену — клик, прокачка, сейвы, оффлайн-доход и rewarded-only поток работают.
+11. Для магазина бусин за BioGel:
+   - создай prefab с `BeadOfferButtonView`,
+   - добавь `BeadOfferListView` на контент списка,
+   - укажи `Manager`, `Offer Button Prefab`, `Content Root`.
+12. Для полезных покупок за реальные деньги:
+   - добавь объект `IAP`,
+   - повесь `MockIapProvider` (для локального теста),
+   - повесь `RealMoneyStoreController`,
+   - привяжи `IdleClickerManager` и `IapProvider`.
+13. Создай prefab карточки IAP с `RealMoneyProductButtonView`, затем добавь `RealMoneyProductListView`.
+14. Создай кнопку "Watch ad", добавь `RewardedAdButtonView` и укажи контроллер монетизации.
+15. Запусти сцену — клик, прокачка, магазин, сейвы, оффлайн-доход и rewarded-only поток работают.
 
 ## Концепция Space Farm
 
 - Основной ресурс: **BioGel**.
+- Вторичный ресурс магазина: **Beads**.
 - Тап = ручной сбор в куполе.
 - Idle = автоматическая добыча дронами.
 - Цель: пройти путь от мини-теплицы до терраформинга.
+
+Магазин:
+- **BioGel -> Beads**: офферы обмена внутриигровой валюты на бусины.
+- **Real money utility packs**: полезные наборы (BioGel + Beads + временный буст).
 
 Дефолтная цепочка апгрейдов:
 1. Manual Harvest Protocol
@@ -74,6 +95,7 @@
 - Путь: `Application.persistentDataPath`
 - Сохраняется:
   - BioGel (внутреннее поле `coins`),
+  - Beads (внутреннее поле `beads`),
   - lifetime BioGel,
   - уровни апгрейдов,
   - время последнего сейва (для оффлайн-начисления).
@@ -81,10 +103,14 @@
 ## Что быстро добавить перед релизом
 
 1. **Rewarded ad only**: `x2 добыча на 30 минут` + мгновенная награда BioGel.
-2. **IAP**:
-   - стартовый бустер BioGel,
-   - редкие кристаллы для косметики.
-3. **Retention**:
+2. **Магазин Beads**:
+   - обменные офферы с разной эффективностью,
+   - unlock по lifetime BioGel.
+3. **IAP**:
+   - Starter Supply Drop,
+   - Terraform Booster,
+   - Colony Expansion Bundle.
+4. **Retention**:
    - ежедневный бонус,
    - 3-5 достижений,
    - миссии на сессию.
@@ -94,11 +120,13 @@
 - Автоматической рекламы нет.
 - Interstitial/App Open нет.
 - Награда выдается только после добровольного нажатия игрока на кнопку "Watch ad".
+- IAP-покупки выполняются только по нажатию на кнопку продукта игроком.
 
 ## Локализация и тексты для публикации
 
 Готовый пакет RU+EN лежит здесь:
 - `UnityIdleClickerKit/LOCALIZATION_PACK.md`
+- `UnityIdleClickerKit/SHOP_SETUP.md`
 - `UnityIdleClickerKit/StoreListing/GetApps/ru-RU.md`
 - `UnityIdleClickerKit/StoreListing/GetApps/en-US.md`
 - `UnityIdleClickerKit/Localization/in_game_strings.csv`

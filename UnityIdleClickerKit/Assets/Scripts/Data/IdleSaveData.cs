@@ -6,8 +6,9 @@ namespace IdleClickerKit.Data
     [Serializable]
     public class IdleSaveData
     {
-        public string version = "1";
+        public string version = "2";
         public double coins = 0d;
+        public double beads = 0d;
         public double lifetimeCoins = 0d;
         public long lastSaveUnixUtc = 0L;
         public List<UpgradeLevelData> upgradeLevels = new List<UpgradeLevelData>();

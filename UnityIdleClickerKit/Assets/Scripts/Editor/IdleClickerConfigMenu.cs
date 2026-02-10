@@ -26,12 +26,15 @@ namespace IdleClickerKit.Editor
 
             var config = ScriptableObject.CreateInstance<IdleClickerConfig>();
             config.startingCoins = 0f;
+            config.startingBeads = 0f;
             config.baseClickPower = 1f;
             config.basePassivePerSecond = 0f;
             config.offlineIncomeEfficiency = 0.7f;
             config.offlineIncomeCapSeconds = 8f * 3600f;
             config.autosaveIntervalSeconds = 8f;
             config.upgrades = BuildDefaultUpgrades();
+            config.beadExchangeOffers = BuildDefaultBeadOffers();
+            config.realMoneyProducts = BuildDefaultRealMoneyProducts();
 
             AssetDatabase.CreateAsset(config, ConfigAssetPath);
             AssetDatabase.SaveAssets();
@@ -112,6 +115,80 @@ namespace IdleClickerKit.Editor
                     costGrowth = 1.3f,
                     passiveBonusPerLevel = 10f,
                     globalMultiplierPerLevel = 0.05f,
+                },
+            };
+        }
+
+        private static List<BeadExchangeOfferDefinition> BuildDefaultBeadOffers()
+        {
+            return new List<BeadExchangeOfferDefinition>
+            {
+                new BeadExchangeOfferDefinition
+                {
+                    id = "bead_micro_cache",
+                    title = "Micro Bead Cache",
+                    description = "Exchange BioGel for a small bundle of Beads.",
+                    unlockAtLifetimeCoins = 40f,
+                    bioGelCost = 150f,
+                    beadsAmount = 10f,
+                },
+                new BeadExchangeOfferDefinition
+                {
+                    id = "bead_drone_crate",
+                    title = "Drone Bead Crate",
+                    description = "Exchange BioGel for a medium Bead crate.",
+                    unlockAtLifetimeCoins = 400f,
+                    bioGelCost = 900f,
+                    beadsAmount = 70f,
+                },
+                new BeadExchangeOfferDefinition
+                {
+                    id = "bead_orbital_vault",
+                    title = "Orbital Bead Vault",
+                    description = "High-tier exchange with best Bead efficiency.",
+                    unlockAtLifetimeCoins = 3000f,
+                    bioGelCost = 5000f,
+                    beadsAmount = 450f,
+                },
+            };
+        }
+
+        private static List<RealMoneyProductDefinition> BuildDefaultRealMoneyProducts()
+        {
+            return new List<RealMoneyProductDefinition>
+            {
+                new RealMoneyProductDefinition
+                {
+                    productId = "iap_starter_supply",
+                    title = "Starter Supply Drop",
+                    description = "Instant BioGel and Beads to speed up early progress.",
+                    fallbackPriceLabel = "$0.99",
+                    bioGelReward = 8000f,
+                    beadsReward = 80f,
+                    rewardBoostMultiplier = 1f,
+                    rewardBoostDurationSeconds = 0f,
+                },
+                new RealMoneyProductDefinition
+                {
+                    productId = "iap_terraform_booster",
+                    title = "Terraform Booster",
+                    description = "Powerful temporary multiplier and bonus resources.",
+                    fallbackPriceLabel = "$2.99",
+                    bioGelReward = 20000f,
+                    beadsReward = 150f,
+                    rewardBoostMultiplier = 2f,
+                    rewardBoostDurationSeconds = 3600f,
+                },
+                new RealMoneyProductDefinition
+                {
+                    productId = "iap_colony_bundle",
+                    title = "Colony Expansion Bundle",
+                    description = "Big utility pack for mid-game acceleration.",
+                    fallbackPriceLabel = "$4.99",
+                    bioGelReward = 70000f,
+                    beadsReward = 600f,
+                    rewardBoostMultiplier = 2f,
+                    rewardBoostDurationSeconds = 7200f,
                 },
             };
         }

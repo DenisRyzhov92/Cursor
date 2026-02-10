@@ -18,6 +18,8 @@ Your core loop is simple:
 ### Features
 - Idle clicker progression with steady growth.
 - Upgrade paths for tap power, passive income, and global multiplier.
+- Bead shop: exchange BioGel for Beads.
+- Useful real-money utility packs (BioGel, Beads, temporary boosts).
 - Offline progress: your farm keeps producing while you are away.
 - Clean economy design focused on progression and readability.
 - Space-farming theme with domes, orbital modules, and terraforming systems.

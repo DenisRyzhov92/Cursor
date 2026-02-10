@@ -20,6 +20,7 @@
 - `StoreListing/GetApps/ru-RU.md` — готовые RU тексты для публикации.
 - `StoreListing/GetApps/en-US.md` — готовые EN тексты для публикации.
 - `Localization/in_game_strings.csv` — ключи и строки для UI + апгрейдов.
+- `SHOP_SETUP.md` — подключение магазинов (Beads + IAP).
 
 ## Как использовать быстро
 

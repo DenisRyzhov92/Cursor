@@ -36,6 +36,12 @@ namespace IdleClickerKit.Core
         private bool isInitialized = false;
 
         private static readonly List<UpgradeSnapshot> EmptySnapshots = new List<UpgradeSnapshot>(0);
+        private static readonly List<BeadExchangeOfferSnapshot> EmptyBeadOfferSnapshots =
+            new List<BeadExchangeOfferSnapshot>(0);
+        private static readonly List<BeadExchangeOfferDefinition> EmptyBeadOfferDefinitions =
+            new List<BeadExchangeOfferDefinition>(0);
+        private static readonly List<RealMoneyProductDefinition> EmptyRealMoneyDefinitions =
+            new List<RealMoneyProductDefinition>(0);
 
         public event Action StateChanged;
         public event Action<OfflineProgressResult> OfflineProgressApplied;
@@ -53,6 +59,11 @@ namespace IdleClickerKit.Core
         public double LifetimeCoins
         {
             get { return engine != null ? engine.LifetimeCoins : 0d; }
+        }
+
+        public double Beads
+        {
+            get { return engine != null ? engine.Beads : 0d; }
         }
 
         public double ClickPower
@@ -206,6 +217,22 @@ namespace IdleClickerKit.Core
             StateChanged?.Invoke();
         }
 
+        public void GrantRewardBeads(double amount)
+        {
+            if (!TryEnsureInitialized())
+            {
+                return;
+            }
+
+            if (amount <= 0d)
+            {
+                return;
+            }
+
+            engine.GrantBeads(amount);
+            StateChanged?.Invoke();
+        }
+
         public void ActivateRewardBoost(float durationSeconds, float multiplier)
         {
             if (!TryEnsureInitialized())
@@ -239,6 +266,84 @@ namespace IdleClickerKit.Core
             return wasBought;
         }
 
+        public bool TryBuyBeadExchangeOffer(string offerId)
+        {
+            if (!TryEnsureInitialized())
+            {
+                return false;
+            }
+
+            var bought = engine.TryBuyBeadExchangeOffer(offerId);
+            if (bought)
+            {
+                StateChanged?.Invoke();
+            }
+
+            return bought;
+        }
+
+        public bool TryApplyRealMoneyProduct(string productId)
+        {
+            if (!TryEnsureInitialized())
+            {
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(productId) || config == null || config.realMoneyProducts == null)
+            {
+                return false;
+            }
+
+            RealMoneyProductDefinition definition = null;
+            for (var i = 0; i < config.realMoneyProducts.Count; i++)
+            {
+                var candidate = config.realMoneyProducts[i];
+                if (candidate == null)
+                {
+                    continue;
+                }
+
+                if (string.Equals(candidate.productId, productId, StringComparison.Ordinal))
+                {
+                    definition = candidate;
+                    break;
+                }
+            }
+
+            if (definition == null)
+            {
+                return false;
+            }
+
+            var anyRewardApplied = false;
+
+            if (definition.bioGelReward > 0f)
+            {
+                engine.GrantCoins(definition.bioGelReward);
+                anyRewardApplied = true;
+            }
+
+            if (definition.beadsReward > 0f)
+            {
+                engine.GrantBeads(definition.beadsReward);
+                anyRewardApplied = true;
+            }
+
+            if (definition.rewardBoostMultiplier > 1f && definition.rewardBoostDurationSeconds > 0f)
+            {
+                rewardBoostMultiplier = Math.Max(rewardBoostMultiplier, definition.rewardBoostMultiplier);
+                rewardBoostSecondsRemaining = Math.Max(rewardBoostSecondsRemaining, definition.rewardBoostDurationSeconds);
+                anyRewardApplied = true;
+            }
+
+            if (anyRewardApplied)
+            {
+                StateChanged?.Invoke();
+            }
+
+            return anyRewardApplied;
+        }
+
         public UpgradeSnapshot GetUpgradeSnapshot(string upgradeId)
         {
             if (!TryEnsureInitialized())
@@ -259,6 +364,26 @@ namespace IdleClickerKit.Core
             return engine.GetUpgradeSnapshots();
         }
 
+        public BeadExchangeOfferSnapshot GetBeadExchangeOfferSnapshot(string offerId)
+        {
+            if (!TryEnsureInitialized())
+            {
+                return null;
+            }
+
+            return engine.GetBeadExchangeOfferSnapshot(offerId);
+        }
+
+        public IReadOnlyList<BeadExchangeOfferSnapshot> GetBeadExchangeOfferSnapshots()
+        {
+            if (!TryEnsureInitialized())
+            {
+                return EmptyBeadOfferSnapshots;
+            }
+
+            return engine.GetBeadExchangeOfferSnapshots();
+        }
+
         public IReadOnlyList<UpgradeDefinition> GetUpgradeDefinitions()
         {
             if (engine != null)
@@ -272,6 +397,31 @@ namespace IdleClickerKit.Core
             }
 
             return new List<UpgradeDefinition>(0);
+        }
+
+        public IReadOnlyList<BeadExchangeOfferDefinition> GetBeadExchangeOfferDefinitions()
+        {
+            if (engine != null)
+            {
+                return engine.BeadExchangeOffers;
+            }
+
+            if (config != null && config.beadExchangeOffers != null)
+            {
+                return config.beadExchangeOffers;
+            }
+
+            return EmptyBeadOfferDefinitions;
+        }
+
+        public IReadOnlyList<RealMoneyProductDefinition> GetRealMoneyProductDefinitions()
+        {
+            if (config != null && config.realMoneyProducts != null)
+            {
+                return config.realMoneyProducts;
+            }
+
+            return EmptyRealMoneyDefinitions;
         }
 
         public string GetSavePath()

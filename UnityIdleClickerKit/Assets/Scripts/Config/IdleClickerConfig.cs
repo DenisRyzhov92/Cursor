@@ -11,6 +11,9 @@ namespace IdleClickerKit.Config
         public float startingCoins = 0f;
 
         [Min(0f)]
+        public float startingBeads = 0f;
+
+        [Min(0f)]
         public float baseClickPower = 1f;
 
         [Min(0f)]
@@ -29,5 +32,11 @@ namespace IdleClickerKit.Config
 
         [Header("Economy")]
         public List<UpgradeDefinition> upgrades = new List<UpgradeDefinition>();
+
+        [Header("Shop: BioGel -> Beads")]
+        public List<BeadExchangeOfferDefinition> beadExchangeOffers = new List<BeadExchangeOfferDefinition>();
+
+        [Header("Shop: Real Money Products")]
+        public List<RealMoneyProductDefinition> realMoneyProducts = new List<RealMoneyProductDefinition>();
     }
 }
