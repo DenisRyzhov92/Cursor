@@ -20,7 +20,7 @@ namespace IdleClickerKit.UI
         private TMP_Text statusLabel;
 
         [SerializeField]
-        private string defaultButtonText = "Watch ad for reward";
+        private string defaultButtonText = "Watch ad: orbital supply drop";
 
         private void Awake()
         {

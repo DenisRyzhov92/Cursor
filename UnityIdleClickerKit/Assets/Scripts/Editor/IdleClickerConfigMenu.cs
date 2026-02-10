@@ -11,7 +11,7 @@ namespace IdleClickerKit.Editor
         private const string ResourcesFolder = "Assets/Resources";
         private const string ConfigAssetPath = "Assets/Resources/IdleClickerConfig.asset";
 
-        [MenuItem("Idle Clicker/Create Default Config")]
+        [MenuItem("Space Farm/Create Default Config")]
         public static void CreateDefaultConfig()
         {
             EnsureResourcesFolder();
@@ -20,7 +20,7 @@ namespace IdleClickerKit.Editor
             if (existing != null)
             {
                 Selection.activeObject = existing;
-                EditorUtility.DisplayDialog("Idle Clicker", "Config already exists in Assets/Resources.", "OK");
+                EditorUtility.DisplayDialog("Space Farm", "Config already exists in Assets/Resources.", "OK");
                 return;
             }
 
@@ -38,7 +38,7 @@ namespace IdleClickerKit.Editor
             AssetDatabase.Refresh();
 
             Selection.activeObject = config;
-            EditorUtility.DisplayDialog("Idle Clicker", "Default IdleClickerConfig created.", "Great");
+            EditorUtility.DisplayDialog("Space Farm", "Default Space Farm config created.", "Great");
         }
 
         private static List<UpgradeDefinition> BuildDefaultUpgrades()
@@ -47,9 +47,9 @@ namespace IdleClickerKit.Editor
             {
                 new UpgradeDefinition
                 {
-                    id = "tap_training",
-                    title = "Tap Training",
-                    description = "+1 tap power per level.",
+                    id = "manual_harvest_protocol",
+                    title = "Manual Harvest Protocol",
+                    description = "+1 BioGel tap power per level.",
                     maxLevel = 40,
                     unlockAtLifetimeCoins = 0f,
                     baseCost = 10f,
@@ -58,9 +58,9 @@ namespace IdleClickerKit.Editor
                 },
                 new UpgradeDefinition
                 {
-                    id = "auto_cursor",
-                    title = "Auto Cursor",
-                    description = "+0.4 idle/s per level.",
+                    id = "micro_drone_swarm",
+                    title = "Micro Drone Swarm",
+                    description = "+0.4 BioGel/s per level.",
                     maxLevel = 35,
                     unlockAtLifetimeCoins = 15f,
                     baseCost = 25f,
@@ -69,9 +69,9 @@ namespace IdleClickerKit.Editor
                 },
                 new UpgradeDefinition
                 {
-                    id = "iron_tools",
-                    title = "Iron Tools",
-                    description = "+3 tap and +0.6 idle/s per level.",
+                    id = "hydroponic_racks",
+                    title = "Hydroponic Racks",
+                    description = "+3 tap and +0.6 BioGel/s per level.",
                     maxLevel = 30,
                     unlockAtLifetimeCoins = 150f,
                     baseCost = 120f,
@@ -81,9 +81,9 @@ namespace IdleClickerKit.Editor
                 },
                 new UpgradeDefinition
                 {
-                    id = "mini_factory",
-                    title = "Mini Factory",
-                    description = "+2 idle/s per level.",
+                    id = "orbital_greenhouse",
+                    title = "Orbital Greenhouse",
+                    description = "+2 BioGel/s per level.",
                     maxLevel = 25,
                     unlockAtLifetimeCoins = 600f,
                     baseCost = 500f,
@@ -92,9 +92,9 @@ namespace IdleClickerKit.Editor
                 },
                 new UpgradeDefinition
                 {
-                    id = "ad_campaign",
-                    title = "Ad Campaign",
-                    description = "+2% global multiplier per level.",
+                    id = "solar_mirror_array",
+                    title = "Solar Mirror Array",
+                    description = "+2% global output per level.",
                     maxLevel = 20,
                     unlockAtLifetimeCoins = 1500f,
                     baseCost = 1000f,
@@ -103,9 +103,9 @@ namespace IdleClickerKit.Editor
                 },
                 new UpgradeDefinition
                 {
-                    id = "ai_manager",
-                    title = "AI Manager",
-                    description = "+10 idle/s and +5% multiplier per level.",
+                    id = "terraforming_ai",
+                    title = "Terraforming AI",
+                    description = "+10 BioGel/s and +5% output per level.",
                     maxLevel = 15,
                     unlockAtLifetimeCoins = 5000f,
                     baseCost = 4500f,

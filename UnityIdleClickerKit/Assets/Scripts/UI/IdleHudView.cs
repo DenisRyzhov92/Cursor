@@ -60,12 +60,12 @@ namespace IdleClickerKit.UI
 
             if (coinsText != null)
             {
-                coinsText.text = $"Coins: {NumberFormatter.Compact(manager.Coins)}";
+                coinsText.text = $"BioGel: {NumberFormatter.Compact(manager.Coins)}";
             }
 
             if (lifetimeText != null)
             {
-                lifetimeText.text = $"Lifetime: {NumberFormatter.Compact(manager.LifetimeCoins)}";
+                lifetimeText.text = $"Total BioGel: {NumberFormatter.Compact(manager.LifetimeCoins)}";
             }
 
             if (clickPowerText != null)
@@ -75,7 +75,7 @@ namespace IdleClickerKit.UI
 
             if (passiveIncomeText != null)
             {
-                passiveIncomeText.text = $"Idle/s: +{NumberFormatter.Compact(manager.PassivePerSecond)}";
+                passiveIncomeText.text = $"BioGel/s: +{NumberFormatter.Compact(manager.PassivePerSecond)}";
             }
 
             if (multiplierText != null)

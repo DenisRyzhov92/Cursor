@@ -144,7 +144,7 @@ namespace IdleClickerKit.UI
 
             if (costText != null)
             {
-                costText.text = $"Cost: {NumberFormatter.Compact(snapshot.cost)}";
+                costText.text = $"Cost: {NumberFormatter.Compact(snapshot.cost)} BioGel";
             }
 
             if (!snapshot.isUnlocked)
@@ -152,7 +152,7 @@ namespace IdleClickerKit.UI
                 if (stateText != null)
                 {
                     stateText.text =
-                        $"Unlock at {NumberFormatter.Compact(snapshot.unlockAtLifetimeCoins)} lifetime";
+                        $"Unlock at {NumberFormatter.Compact(snapshot.unlockAtLifetimeCoins)} total BioGel";
                 }
 
                 if (buyButton != null)
@@ -165,7 +165,7 @@ namespace IdleClickerKit.UI
 
             if (stateText != null)
             {
-                stateText.text = snapshot.canBuy ? "Available" : "Need more coins";
+                stateText.text = snapshot.canBuy ? "Available" : "Need more BioGel";
             }
 
             if (buyButton != null)

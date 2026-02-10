@@ -21,7 +21,7 @@ namespace IdleClickerKit.Monetization
 
         [Header("Reward")]
         [SerializeField]
-        [Tooltip("Reward coins equal to this amount of passive income seconds.")]
+        [Tooltip("Reward BioGel equal to this amount of passive income seconds.")]
         [Min(0f)]
         private float passiveSecondsAsCoins = 300f;
 

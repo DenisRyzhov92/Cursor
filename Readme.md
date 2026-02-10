@@ -1,6 +1,6 @@
-# Unity Idle Clicker Kit
+# Space Farm Idle Clicker Kit
 
-Готовый набор C#-скриптов для idle clicker с прокачкой, чтобы быстро собрать игру в Unity на Windows и довести до публикации в GetApps.
+Готовый набор C#-скриптов для idle clicker с прокачкой в сеттинге космофермы, чтобы быстро собрать игру в Unity на Windows и довести до публикации в GetApps.
 
 ## Что уже готово
 
@@ -15,7 +15,7 @@
   - `IdleClickerConfig` (ScriptableObject) — все стартовые параметры экономики
   - `UpgradeDefinition` — описание апгрейда (стоимость, бонусы, unlock-условие)
 - **UI**
-  - `IdleHudView` — обновляет HUD (coins, tap, idle/s, multiplier, offline reward)
+  - `IdleHudView` — обновляет HUD (BioGel, tap, BioGel/s, multiplier, offline reward)
   - `UpgradeButtonView` — логика кнопки апгрейда
   - `UpgradeListView` — автогенерация списка апгрейдов из конфига
   - `RewardedAdButtonView` — UI-кнопка для rewarded рекламы
@@ -25,14 +25,14 @@
   - `RewardedAdsProviderBase` — абстракция провайдера rewarded рекламы
   - `MockRewardedAdsProvider` — тестовый провайдер для локальной проверки
 - **Editor**
-  - `Idle Clicker/Create Default Config` — меню для автосоздания дефолтного конфига с базовыми апгрейдами
+  - `Space Farm/Create Default Config` — меню для автосоздания дефолтного конфига с космофермерскими апгрейдами
 
 ## Быстрый старт в Unity (дома на Windows)
 
 1. Создай новый проект в Unity (лучше 2022 LTS+, 2D Mobile).
 2. Скопируй папку `UnityIdleClickerKit/Assets/Scripts` в свой `Assets/Scripts`.
 3. Если TMP не инициализирован: `Window -> TextMeshPro -> Import TMP Essential Resources`.
-4. В Unity нажми: **Idle Clicker -> Create Default Config**.
+4. В Unity нажми: **Space Farm -> Create Default Config**.
    - Создастся `Assets/Resources/IdleClickerConfig.asset`.
 5. Создай пустой объект `GameManager`, добавь компонент `IdleClickerManager`.
 6. Назначь в `IdleClickerManager` поле `Config` (созданный asset).
@@ -53,22 +53,37 @@
 11. Создай кнопку "Watch ad", добавь `RewardedAdButtonView` и укажи контроллер монетизации.
 12. Запусти сцену — клик, прокачка, сейвы, оффлайн-доход и rewarded-only поток работают.
 
+## Концепция Space Farm
+
+- Основной ресурс: **BioGel**.
+- Тап = ручной сбор в куполе.
+- Idle = автоматическая добыча дронами.
+- Цель: пройти путь от мини-теплицы до терраформинга.
+
+Дефолтная цепочка апгрейдов:
+1. Manual Harvest Protocol
+2. Micro Drone Swarm
+3. Hydroponic Racks
+4. Orbital Greenhouse
+5. Solar Mirror Array
+6. Terraforming AI
+
 ## Сохранения
 
 - Файл сейва: `idle_clicker_save.json`
 - Путь: `Application.persistentDataPath`
 - Сохраняется:
-  - монеты,
-  - lifetime-монеты,
+  - BioGel (внутреннее поле `coins`),
+  - lifetime BioGel,
   - уровни апгрейдов,
   - время последнего сейва (для оффлайн-начисления).
 
 ## Что быстро добавить перед релизом
 
-1. **Rewarded ad only**: `x2 idle income на 30 минут` + мгновенная награда в coins.
+1. **Rewarded ad only**: `x2 добыча на 30 минут` + мгновенная награда BioGel.
 2. **IAP**:
-   - стартовый бустер валюты,
-   - premium currency pack.
+   - стартовый бустер BioGel,
+   - редкие кристаллы для косметики.
 3. **Retention**:
    - ежедневный бонус,
    - 3-5 достижений,

@@ -1,12 +1,12 @@
 # Balance Guide (Quick Tuning)
 
-Эта шпаргалка помогает быстро подкрутить экономику перед релизом.
+Эта шпаргалка помогает быстро подкрутить экономику космофермы перед релизом.
 
 ## Главные рычаги
 
 Файл: `IdleClickerConfig.asset`
 
-- `baseClickPower` — сколько даёт 1 тап в старте.
+- `baseClickPower` — сколько BioGel даёт 1 тап в старте.
 - `basePassivePerSecond` — стартовый idle-доход.
 - `offlineIncomeEfficiency` — доля оффлайн-дохода (0..1).
 - `offlineIncomeCapSeconds` — максимум секунд оффлайн-начисления.
