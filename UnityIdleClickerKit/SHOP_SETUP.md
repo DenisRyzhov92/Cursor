@@ -84,6 +84,9 @@ IAP utility packs:
 - Авто-покупок нет.
 - Реальная интеграция должна использовать `IapProviderBase`.
 
+Перед релизом прогони:
+- `IAP_SMOKE_TEST_CHECKLIST.md`
+
 ## Переключение на реальные платежи
 
 1. Установи пакет Unity Purchasing в проект.

@@ -131,6 +131,7 @@
 - `UnityIdleClickerKit/LOCALIZATION_PACK.md`
 - `UnityIdleClickerKit/SHOP_SETUP.md`
 - `UnityIdleClickerKit/UNITY_IAP_SETUP.md`
+- `UnityIdleClickerKit/IAP_SMOKE_TEST_CHECKLIST.md`
 - `UnityIdleClickerKit/StoreListing/GetApps/ru-RU.md`
 - `UnityIdleClickerKit/StoreListing/GetApps/en-US.md`
 - `UnityIdleClickerKit/Localization/in_game_strings.csv`
