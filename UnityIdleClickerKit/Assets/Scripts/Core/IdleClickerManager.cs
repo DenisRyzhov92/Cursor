@@ -31,6 +31,8 @@ namespace IdleClickerKit.Core
 
         private IdleClickerEngine engine;
         private float autosaveTimer = 0f;
+        private float rewardBoostSecondsRemaining = 0f;
+        private double rewardBoostMultiplier = 1d;
         private bool isInitialized = false;
 
         private static readonly List<UpgradeSnapshot> EmptySnapshots = new List<UpgradeSnapshot>(0);
@@ -55,17 +57,32 @@ namespace IdleClickerKit.Core
 
         public double ClickPower
         {
-            get { return engine != null ? engine.ClickPower : 0d; }
+            get { return (engine != null ? engine.ClickPower : 0d) * ActiveRewardBoostMultiplier; }
         }
 
         public double PassivePerSecond
         {
-            get { return engine != null ? engine.PassivePerSecond : 0d; }
+            get { return (engine != null ? engine.PassivePerSecond : 0d) * ActiveRewardBoostMultiplier; }
         }
 
         public double GlobalMultiplier
         {
             get { return engine != null ? engine.GlobalMultiplier : 1d; }
+        }
+
+        public bool HasActiveRewardBoost
+        {
+            get { return rewardBoostSecondsRemaining > 0f && rewardBoostMultiplier > 1d; }
+        }
+
+        public float ActiveRewardBoostSecondsRemaining
+        {
+            get { return Mathf.Max(0f, rewardBoostSecondsRemaining); }
+        }
+
+        public double ActiveRewardBoostMultiplier
+        {
+            get { return HasActiveRewardBoost ? rewardBoostMultiplier : 1d; }
         }
 
         private void Start()
@@ -84,7 +101,8 @@ namespace IdleClickerKit.Core
             }
 
             var deltaTime = Time.unscaledDeltaTime;
-            engine.Tick(deltaTime);
+            TickRewardBoost(deltaTime);
+            engine.GrantCoins(PassivePerSecond * deltaTime);
 
             if (autosaveEnabled && config != null)
             {
@@ -168,7 +186,40 @@ namespace IdleClickerKit.Core
                 return;
             }
 
-            engine.Tap();
+            engine.GrantCoins(ClickPower);
+            StateChanged?.Invoke();
+        }
+
+        public void GrantRewardCoins(double amount)
+        {
+            if (!TryEnsureInitialized())
+            {
+                return;
+            }
+
+            if (amount <= 0d)
+            {
+                return;
+            }
+
+            engine.GrantCoins(amount);
+            StateChanged?.Invoke();
+        }
+
+        public void ActivateRewardBoost(float durationSeconds, float multiplier)
+        {
+            if (!TryEnsureInitialized())
+            {
+                return;
+            }
+
+            if (durationSeconds <= 0f || multiplier <= 1f)
+            {
+                return;
+            }
+
+            rewardBoostMultiplier = Math.Max(rewardBoostMultiplier, multiplier);
+            rewardBoostSecondsRemaining = Math.Max(rewardBoostSecondsRemaining, durationSeconds);
             StateChanged?.Invoke();
         }
 
@@ -247,6 +298,8 @@ namespace IdleClickerKit.Core
             }
 
             engine.ResetProgress();
+            rewardBoostSecondsRemaining = 0f;
+            rewardBoostMultiplier = 1d;
             IdleSaveStorage.Delete(saveFileName);
             Save();
             StateChanged?.Invoke();
@@ -260,6 +313,20 @@ namespace IdleClickerKit.Core
             }
 
             return isInitialized && engine != null;
+        }
+
+        private void TickRewardBoost(float deltaTime)
+        {
+            if (deltaTime <= 0f || !HasActiveRewardBoost)
+            {
+                return;
+            }
+
+            rewardBoostSecondsRemaining = Mathf.Max(0f, rewardBoostSecondsRemaining - deltaTime);
+            if (rewardBoostSecondsRemaining <= 0f)
+            {
+                rewardBoostMultiplier = 1d;
+            }
         }
     }
 }

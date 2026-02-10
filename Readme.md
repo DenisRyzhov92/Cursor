@@ -18,7 +18,12 @@
   - `IdleHudView` — обновляет HUD (coins, tap, idle/s, multiplier, offline reward)
   - `UpgradeButtonView` — логика кнопки апгрейда
   - `UpgradeListView` — автогенерация списка апгрейдов из конфига
+  - `RewardedAdButtonView` — UI-кнопка для rewarded рекламы
   - `TapAreaView` — зона тапа, поддержка удержания
+- **Monetization**
+  - `RewardedOnlyMonetizationController` — rewarded-only логика наград (без авто-показа)
+  - `RewardedAdsProviderBase` — абстракция провайдера rewarded рекламы
+  - `MockRewardedAdsProvider` — тестовый провайдер для локальной проверки
 - **Editor**
   - `Idle Clicker/Create Default Config` — меню для автосоздания дефолтного конфига с базовыми апгрейдами
 
@@ -40,7 +45,13 @@
    - `Manager`,
    - `Upgrade Button Prefab`,
    - `Content Root`.
-10. Запусти сцену — клик, прокачка, сейвы и оффлайн-доход уже работают.
+10. Для rewarded-only рекламы:
+   - добавь объект `Monetization`,
+   - повесь `MockRewardedAdsProvider` (для локального теста),
+   - повесь `RewardedOnlyMonetizationController`,
+   - привяжи `IdleClickerManager` и `RewardedAdsProvider`.
+11. Создай кнопку "Watch ad", добавь `RewardedAdButtonView` и укажи контроллер монетизации.
+12. Запусти сцену — клик, прокачка, сейвы, оффлайн-доход и rewarded-only поток работают.
 
 ## Сохранения
 
@@ -54,15 +65,20 @@
 
 ## Что быстро добавить перед релизом
 
-1. **Rewarded ad**: `x2 idle income на 30 минут`.
-2. **Interstitial**: после N покупок или каждые 60–90 сек активной игры.
-3. **IAP**:
-   - `Remove Ads`,
-   - стартовый бустер валюты.
-4. **Retention**:
+1. **Rewarded ad only**: `x2 idle income на 30 минут` + мгновенная награда в coins.
+2. **IAP**:
+   - стартовый бустер валюты,
+   - premium currency pack.
+3. **Retention**:
    - ежедневный бонус,
    - 3-5 достижений,
    - миссии на сессию.
+
+## Политика монетизации (жестко)
+
+- Автоматической рекламы нет.
+- Interstitial/App Open нет.
+- Награда выдается только после добровольного нажатия игрока на кнопку "Watch ad".
 
 ## Чеклист публикации в GetApps
 

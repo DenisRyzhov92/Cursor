@@ -77,6 +77,11 @@ namespace IdleClickerKit.Core
             AddCoins(ClickPower);
         }
 
+        public void GrantCoins(double amount)
+        {
+            AddCoins(amount);
+        }
+
         public void Tick(double deltaTimeSeconds)
         {
             if (deltaTimeSeconds <= 0d)

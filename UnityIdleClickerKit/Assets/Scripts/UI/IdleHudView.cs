@@ -28,6 +28,9 @@ namespace IdleClickerKit.UI
         [SerializeField]
         private TMP_Text offlineRewardText;
 
+        [SerializeField]
+        private TMP_Text rewardBoostText;
+
         private void OnEnable()
         {
             if (manager != null)
@@ -78,6 +81,13 @@ namespace IdleClickerKit.UI
             if (multiplierText != null)
             {
                 multiplierText.text = $"x{manager.GlobalMultiplier:0.00}";
+            }
+
+            if (rewardBoostText != null)
+            {
+                rewardBoostText.text = manager.HasActiveRewardBoost
+                    ? $"Reward boost: x{manager.ActiveRewardBoostMultiplier:0.00} ({manager.ActiveRewardBoostSecondsRemaining:0}s)"
+                    : string.Empty;
             }
         }
 
