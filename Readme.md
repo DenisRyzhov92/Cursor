@@ -95,6 +95,16 @@
 - Interstitial/App Open нет.
 - Награда выдается только после добровольного нажатия игрока на кнопку "Watch ad".
 
+## Локализация и тексты для публикации
+
+Готовый пакет RU+EN лежит здесь:
+- `UnityIdleClickerKit/LOCALIZATION_PACK.md`
+- `UnityIdleClickerKit/StoreListing/GetApps/ru-RU.md`
+- `UnityIdleClickerKit/StoreListing/GetApps/en-US.md`
+- `UnityIdleClickerKit/Localization/in_game_strings.csv`
+
+Можно сразу копировать short/full description в GetApps и использовать CSV как основу для локализации UI в Unity.
+
 ## Чеклист публикации в GetApps
 
 1. Android Build settings (IL2CPP, ARM64, min SDK по требованиям магазина).
